@@ -4,4 +4,4 @@ commonmark:
   options: ["UNSAFE", "SMART", "FOOTNOTES"]
   extensions: ["strikethrough", "autolink", "table", "tagfilter"]
 
-theme: dark
+theme: jekyll-theme-cayman
