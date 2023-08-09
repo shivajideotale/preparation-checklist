@@ -1,6 +1,6 @@
 ---
 title: "Optional Class"
-tags: ["java", "optional"]
+tags: ["optional"]
 weight: 2
 ---
 
@@ -10,9 +10,9 @@ Optional is a container object used to contain **not-null** objects. Optional ob
 
 ##### Static Methods
 
-- [Optional.empty()](#optionalempty) - used to get an empty instance of this Optional class
-- [Optional.of(T value)]() -
-- [Optional.ofNullable(T value)]() -
+- [Optional.empty()](#optionalempty) - It returns an empty Optional object. No value is present for this Optional.
+- [Optional.of(T value)](#optionaloft-value) - It returns an Optional with the specified present non-null value.
+- [Optional.ofNullable(T value)](#optionalofnullablet-value) - It returns an Optional describing the specified value, if non-null, otherwise returns an empty Optional.
 
 ##### Instance Methods
 
@@ -33,3 +33,23 @@ Optional is a container object used to contain **not-null** objects. Optional ob
 Optional<String> empty = Optional.empty();
 
 ```
+
+#### Optional.of(T value)
+
+```java
+Optional<String> empty = Optional.empty();
+
+```
+
+#### Optional.ofNullable(T value)
+
+```java
+Optional<String> empty = Optional.empty();
+
+```
+
+#### Other Optional classes
+
+- [java.util.OptionalInt](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/OptionalInt.html)
+- [java.util.OptionalDouble](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/OptionalDouble.html)
+- [java.util.OptionalLong](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/OptionalLong.html)
