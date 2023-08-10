@@ -544,10 +544,11 @@ h6 {
   letter-spacing: -1px;
 }
 h1 {
-  font-family: "Novacento Sans Wide", "Helvetica", "Tahoma", "Geneva", "Arial",
+  /* font-family: "Novacento Sans Wide", "Helvetica", "Tahoma", "Geneva", "Arial",
     sans-serif;
+    text-transform: uppercase;
+  */
   text-align: center;
-  text-transform: uppercase;
   color: #222;
   font-weight: 200;
 }

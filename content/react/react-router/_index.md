@@ -3,7 +3,15 @@ title: "React Router"
 weight: 6
 ---
 
-#### React Router Hooks
+#### Components
+
+- Routes
+- Route
+- Link
+- NavLink
+- Navigate
+
+#### Hooks
 
 - useHistory
 - useLocation
