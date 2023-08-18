@@ -1,7 +1,9 @@
 ---
-title: "How React works under the hood"
+title: "React Render Internal Working"
 weight: 2
 ---
+
+https://www.youtube.com/playlist?list=PLC3y8-rFHvwg7czgqpQIBEAHn8D6l530t
 
 Any screen update in a React app happens in three steps:
 
