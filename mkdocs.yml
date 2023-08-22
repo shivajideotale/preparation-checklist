@@ -1,0 +1,54 @@
+site_name: Preparation Checklist
+docs_dir: "docs"
+#copyright: "Copyright &copy; 2022"
+#site_url: "https://aws-observability.github.io/terraform-aws-observability-accelerator/"
+#repo_name: "aws-observability/terraform-aws-observability-accelerator"
+#repo_url: "https://github.com/aws-observability/terraform-aws-observability-accelerator"
+
+extra_css:
+  - "stylesheet/style.css"
+
+theme:
+  logo: images/java-logo.png
+  #favicon: images/aws-favicon.png
+  name: material
+  font:
+    text: Fira Sans
+  #custom_dir: docs/overrides
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.tabs.sticky
+ 
+
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+nav:
+  - Home: index.md
+  - HTML and CSS:
+      - HTML: html-css/html.md
+      - CSS: html-css/css.md
+  - Java:
+      - OOPs: java/oops.md
+      - Optional Class: java/optional-class.md
+  - Spring:
+      - Spring Basic: spring/spring-basic.md
+      - Spring MVC: spring/spring-mvc/index.md
+      - Spring Boot: spring/spring-boot/index.md
+
+
+plugins:
+  - search
