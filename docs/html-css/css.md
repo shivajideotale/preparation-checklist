@@ -59,11 +59,19 @@
     - Padding - Clears an area around the content. The padding is transparent
     - Border - A border that goes around the padding and content
     - Margin - Clears an area outside the border. The margin is transparent
+
 - Types of Box Models in CSS
     - HTML Block and Inline Elements
     - block
     - inline
     - inline-block
+
+- CSS box-sizing property
+    - content-box - Default
+    - border-box
+    - initial - Sets this property to its default value.
+    - inherit - Inherits this property from its parent element. 
+
 - CSS Layout - The position Property
     - static
     - relative
@@ -71,4 +79,5 @@
     - fixed
     - sticky
 
-
+- CSS Layout
+    - Floats
