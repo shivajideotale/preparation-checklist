@@ -6,15 +6,15 @@
 - Inline, Internal and External CSS
 
 - CSS Selectors
-    - Simple selectors (select elements based on name, id, class)
-    - Combinator selectors (select elements based on a specific relationship between them)
-        - descendant selector (space)
-        - child selector (>)
-        - adjacent sibling selector (+)
-        - general sibling selector (~)
-    - Pseudo-class selectors (select elements based on a certain state)
-    - Pseudo-elements selectors (select and style a part of an element)
-    - Attribute selectors (select elements based on an attribute or attribute value)
+    - Simple selectors `select elements based on name, id, class`
+    - Combinator selectors `select elements based on a specific relationship between them`
+        - descendant selector `space`
+        - child selector `>`
+        - adjacent sibling selector `+`
+        - general sibling selector `~`
+    - Pseudo-class selectors `select elements based on a certain state`
+    - Pseudo-elements selectors `select and style a part of an element`
+    - Attribute selectors `select elements based on an attribute or attribute value`
 
 - CSS Pseudo-classes
     - :link
@@ -55,10 +55,10 @@
 - Inheritance and the Universal Selector
 
 - CSS Box Model
-    - Content - The content of the box, where text and images appear
-    - Padding - Clears an area around the content. The padding is transparent
-    - Border - A border that goes around the padding and content
-    - Margin - Clears an area outside the border. The margin is transparent
+    - Content - `The content of the box, where text and images appear`
+    - Padding - `Clears an area around the content. The padding is transparent`
+    - Border - `A border that goes around the padding and content`
+    - Margin - `Clears an area outside the border. The margin is transparent`
 
 - Types of Box Models in CSS
     - HTML Block and Inline Elements
@@ -67,10 +67,10 @@
     - inline-block
 
 - CSS box-sizing property
-    - content-box - Default
+    - content-box - `Default`
     - border-box
-    - initial - Sets this property to its default value.
-    - inherit - Inherits this property from its parent element. 
+    - initial - `Sets this property to its default value.`
+    - inherit - `Inherits this property from its parent element.`
 
 - CSS Layout - The position Property
     - static
@@ -82,15 +82,14 @@
 - CSS Layout - Floats
 
 - CSS Layout - Flexbox
-    - CSS flex model
-        - main axis
-        - cross axis
-
+    - CSS Flex Model
+        - Main axis
+        - Cross axis
     - CSS Flex Container Properties
         - display as flex
         - flex-direction
         - flex-wrap
-        - flex-flow
+        - flex-flow - `flex-flow property is a shorthand property for setting both the flex-direction and flex-wrap properties`
         - justify-content
         - align-items
         - align-content
@@ -100,7 +99,6 @@
         - flex-grow
         - flex-shrink
         - flex-basis
-        - flex - flex property is a shorthand property for the flex-grow, flex-shrink, and flex-basis properties.
+        - flex - `flex property is a shorthand property for the flex-grow, flex-shrink, and flex-basis properties.`
         - align-self
-    - CSS Flex Responsive
 
