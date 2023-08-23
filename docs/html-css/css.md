@@ -79,5 +79,28 @@
     - fixed
     - sticky
 
-- CSS Layout
-    - Floats
+- CSS Layout - Floats
+
+- CSS Layout - Flexbox
+    - CSS flex model
+        - main axis
+        - cross axis
+
+    - CSS Flex Container Properties
+        - display as flex
+        - flex-direction
+        - flex-wrap
+        - flex-flow
+        - justify-content
+        - align-items
+        - align-content
+        - gap
+    - CSS Flex Items Properties
+        - order
+        - flex-grow
+        - flex-shrink
+        - flex-basis
+        - flex - flex property is a shorthand property for the flex-grow, flex-shrink, and flex-basis properties.
+        - align-self
+    - CSS Flex Responsive
+
