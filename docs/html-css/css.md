@@ -92,16 +92,17 @@
         - flex-flow - `flex-flow property is a shorthand property for setting both the flex-direction and flex-wrap properties`
             - flex-direction
             - flex-wrap
-        - justify-items - 
-        - align-items - `align the items on cross-axis (vertically)`
-        - justify-content - `align the items on main-axis (horizontally)`
-        - align-content - `property sets the distribution of space between and around content items along a flexbox's cross-axis (vertically)`
+        - justify-content - `align the grid content on main-axis (horizontally)`
+        - align-content - `align the grid content on cross-axis (vertically)`
+        - justify-items
+        - align-items
         - gap
     - CSS Flex Items Properties
         - flex - `flex property is a shorthand property for the flex-grow, flex-shrink, and flex-basis properties.`
             - flex-grow
             - flex-shrink
             - flex-basis
+        - justify-self
         - align-self
         - order
 
@@ -119,5 +120,21 @@
             - Row Track
         - Gutters (gaps)
 
-   - CSS Grid Container Properties
-   - CSS Grid Items Properties
+    - CSS Grid Container Properties
+        - grid-template-columns
+        - grid-template-rows
+        - grid-template-areas
+        - justify-content
+        - align-content
+        - justify-items
+        - align-items
+        - gap 
+            - row-gap
+            - column-gap
+
+    - CSS Grid Items Properties
+        - grid-column
+        - grid-row
+        - grid-area
+        - justify-self
+        - align-self
