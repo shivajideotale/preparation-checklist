@@ -83,22 +83,41 @@
 
 - CSS Layout - Flexbox
     - CSS Flex Model
-        - Main axis
-        - Cross axis
+        - Flex Container
+        - Flex Items
+        - Main axis 
+        - Cross axis 
     - CSS Flex Container Properties
         - display as flex
-        - flex-direction
-        - flex-wrap
         - flex-flow - `flex-flow property is a shorthand property for setting both the flex-direction and flex-wrap properties`
-        - justify-content
-        - align-items
-        - align-content
+            - flex-direction
+            - flex-wrap
+        - justify-items - 
+        - align-items - `align the items on cross-axis (vertically)`
+        - justify-content - `align the items on main-axis (horizontally)`
+        - align-content - `property sets the distribution of space between and around content items along a flexbox's cross-axis (vertically)`
         - gap
     - CSS Flex Items Properties
-        - order
-        - flex-grow
-        - flex-shrink
-        - flex-basis
         - flex - `flex property is a shorthand property for the flex-grow, flex-shrink, and flex-basis properties.`
+            - flex-grow
+            - flex-shrink
+            - flex-basis
         - align-self
+        - order
 
+- CSS Layout - Grid
+    - CSS Grid Model
+        - Grid Container
+        - Grid Items
+        - Grid Axis
+            - Block or Column Aaxis
+            - Inline or Row Axis
+        - Grid Lines
+        - Grid Cell - `might be filled by a grid item or it can be empty`
+        - Grid Tracks
+            - Column Track
+            - Row Track
+        - Gutters (gaps)
+
+   - CSS Grid Container Properties
+   - CSS Grid Items Properties
