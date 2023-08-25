@@ -69,8 +69,8 @@
 - CSS box-sizing property
     - content-box - `Default`
     - border-box
-    - initial - `Sets this property to its default value.`
-    - inherit - `Inherits this property from its parent element.`
+    - initial - `Sets this property to its default value`
+    - inherit - `Inherits this property from its parent element`
 
 - CSS Layout - The position Property
     - static
@@ -98,7 +98,7 @@
         - align-items
         - gap
     - CSS Flex Items Properties
-        - flex - `flex property is a shorthand property for the flex-grow, flex-shrink, and flex-basis properties.`
+        - flex - `flex property is a shorthand property for the flex-grow, flex-shrink, and flex-basis properties`
             - flex-grow
             - flex-shrink
             - flex-basis
@@ -133,8 +133,12 @@
             - column-gap
 
     - CSS Grid Items Properties
-        - grid-column
-        - grid-row
+        - grid-column - `grid-column property is a shorthand property for the grid-column-start and grid-column-end properties`
+            - grid-column-start
+            - grid-column-end
+        - grid-row - `grid-row property is a shorthand property for the grid-row-start and grid-row-end properties`
+            - grid-row-start
+            - grid-row-end
         - grid-area
         - justify-self
         - align-self
