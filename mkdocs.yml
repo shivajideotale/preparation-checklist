@@ -18,7 +18,11 @@ theme:
   icon:
     repo: fontawesome/brands/github
   features:
+    - search.highlight
     - navigation.tabs.sticky
+    - navigation.instant
+    - navigation.path
+    - navigation.indexes
  
 
   palette:
@@ -41,6 +45,7 @@ nav:
   - HTML and CSS:
       - HTML: html-css/html.md
       - CSS: html-css/css.md
+      - CSS layout: html-css/css-layout.md
   - Java:
       - OOPs: java/oops.md
       - Optional Class: java/optional-class.md
@@ -49,6 +54,10 @@ nav:
       - Spring MVC: spring/spring-mvc/index.md
       - Spring Boot: spring/spring-boot/index.md
 
+markdown_extensions:
+  - toc:
+      title: On this page
+  - def_list
 
 plugins:
   - search
