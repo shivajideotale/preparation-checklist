@@ -1,183 +1,434 @@
-# 🚀 Java Interview Masterclass (2026 Edition)
+# 🚀 Java Interview Masterclass: 100 Q&A (2026 Edition)
 
-A comprehensive guide covering 100 essential Java interview questions. This repository serves as a roadmap for mastering Core Java, JVM internals, Concurrency, Spring Boot, and Microservices architecture for 2026.
+A comprehensive repository containing in-depth explanations for 100 essential Java, Spring, and System Design interview questions. This guide is optimized for senior-level engineering interviews in 2026.
 
 ---
 
-## 📋 Table of Contents
+## 📂 Table of Contents
 1. [Core Java & JVM Internals](#i-core-java--jvm-internals)
-2. [Advanced Concepts](#ii-advanced-concepts)
-3. [Java 8+ & Functional Programming](#iii-java-8-and-functional-programming)
-4. [Concurrency & Multithreading](#iv-concurrency--multithreading)
-5. [Spring & Spring Boot](#v-spring--spring-boot)
-6. [Microservices & Distributed Systems](#vi-microservices--distributed-systems)
-7. [JVM Performance & Troubleshooting](#vii-jvm-performance--troubleshooting)
-8. [Design Patterns & Architecture](#viii-design-patterns--architecture)
+2. [Java 8 to Java 25 & Concurrency](#ii-java-8-to-java-25--concurrency)
+3. [Spring Framework & Microservices](#iii-spring-framework--microservices)
+4. [JVM Tuning & Troubleshooting](#iv-jvm-tuning--troubleshooting)
+5. [Design Patterns & System Design](#v-design-patterns--system-design)
 
 ---
 
 ## I. Core Java & JVM Internals
 
-1. **Explain JVM Architecture.**
-   Consists of three main subsystems: **Class Loader**, **Runtime Data Areas** (Heap, Stack, Metaspace), and **Execution Engine** (JIT Compiler, GC).
+### 1. Explain JVM Architecture.
+The JVM (Java Virtual Machine) is an engine that provides a runtime environment to drive Java Code.
+*   **Class Loader Subsystem:** Performs Loading (Bootstrap, Platform, Application loaders), Linking (Verification, Preparation, Resolution), and Initialization.
+*   **Runtime Data Areas:**
+    *   **Method Area/Metaspace:** Stores class structures, field/method data, and static variables. In 2026, Metaspace is entirely off-heap.
+    *   **Heap Area:** The shared memory where all objects are stored. It is divided into Young (Eden, S0, S1) and Old generations.
+    *   **Stack Area:** Per-thread memory storing local variables and partial results.
+    *   **PC Registers:** Contains the address of the currently executing instruction.
+*   **Execution Engine:** Includes the **Interpreter**, **JIT Compiler** (optimizes hot spots into native code), and **Garbage Collector**.
 
-2. **JDK vs. JRE vs. JVM.**
-   - **JVM**: Runs bytecode.
-   - **JRE**: JVM + Runtime libraries.
-   - **JDK**: JRE + Development tools (`javac`).
+### 2. Difference between JDK, JRE, and JVM.
+*   **JVM:** The abstract machine that executes Bytecode. It is platform-dependent (different JVMs for Mac, Windows, Linux).
+*   **JRE:** JVM + Library sets (rt.jar, etc.). It provides the environment to *run* an app.
+*   **JDK:** JRE + Development Tools (`javac`, `jdb`, `jvisualvm`). It is the full kit to *build* and *run* an app.
 
-3. **How Garbage Collection works?**
-   It identifies unreachable objects and reclaims their memory. Modern JVMs use generational collection (Young vs. Old generation).
+### 3. How Garbage Collection works in Java?
+GC is the process of reclaiming heap space by destroying unreachable objects.
+*   **Mark:** The GC identifies which objects are in use by traversing "GC Roots" (Stack references, static fields).
+*   **Sweep:** It removes the objects that were not "marked."
+*   **Compact:** It moves the remaining objects to a contiguous memory block to reduce fragmentation.
+*   **Generational Hypothesis:** Most objects die young. Therefore, GC runs frequently on the Young Generation (Minor GC) and less frequently on the Old Generation (Major GC).
 
-4. **Types of Garbage Collectors.**
-   - **Serial/Parallel**: Throughput focused.
-   - **G1 GC**: Low-latency default.
-   - **ZGC (Generational)**: Ultra-low latency (<1ms) for 2026 standards.
+### 4. Types of Garbage Collectors.
+*   **Serial GC:** Single-threaded; pauses all app threads (Stop-The-World).
+*   **Parallel GC:** Default in Java 8; uses multiple threads for Young Gen but still has STW pauses.
+*   **G1 GC:** Default since Java 9; partitions heap into regions to predict and limit pause times.
+*   **Generational ZGC:** The 2026 gold standard. It performs almost all work concurrently with application threads, keeping STW pauses under 1ms even for terabyte-sized heaps.
 
-5. **Memory Leak.**
-   When objects are no longer used but are still referenced, preventing the GC from cleaning them up.
+### 5. What is a memory leak in Java?
+A memory leak occurs when objects are no longer needed by the program logic but are still referenced by a live root (e.g., a static `Map` that is never cleared). This prevents the GC from reclaiming the memory, eventually leading to `java.lang.OutOfMemoryError`.
 
-6. **Heap vs. Stack.**
-   - **Heap**: Stores objects; shared across threads.
-   - **Stack**: Stores primitive local variables and method frames; thread-private.
+### 6. Heap vs. Stack Memory.
+*   **Heap:** Stores all objects created by `new`. It is shared by all threads. It is larger but slower to access.
+*   **Stack:** Stores primitive local variables and object references. It is thread-private. It follows LIFO (Last-In-First-Out) and is very fast.
 
-7. **String vs. StringBuilder vs. StringBuffer.**
-   `String` is immutable; `StringBuilder` is mutable/fast; `StringBuffer` is mutable/thread-safe.
+### 7. String vs. StringBuilder vs. StringBuffer.
+*   **String:** Immutable. Modifying a string creates a new object in the **String Constant Pool**.
+*   **StringBuilder:** Mutable. Faster than String for concatenation because it modifies the existing buffer. It is **not** thread-safe.
+*   **StringBuffer:** Mutable and **thread-safe**. It uses synchronized methods, making it slower than `StringBuilder`.
 
-8. **HashMap Internal Working.**
-   Uses `hashCode()` for bucket indexing and `equals()` for collision resolution. Java 8+ uses balanced trees for large collisions.
+### 8. How HashMap works internally?
+It uses an array of "buckets."
+*   **Index Calculation:** Index = `(n-1) & hash(key)`.
+*   **Collision Handling:** Uses Linked Lists for entries in the same bucket.
+*   **Treeification:** Since Java 8, if a bucket size exceeds 8 and the total map capacity > 64, the list converts to a **Red-Black Tree** (changing search time from $O(n)$ to $O(\log n)$).
 
-9. **HashMap vs. ConcurrentHashMap.**
-   `ConcurrentHashMap` uses bucket-level locking (CAS) for thread safety without locking the whole map.
+### 9. HashMap vs. ConcurrentHashMap.
+*   `HashMap` is not thread-safe; concurrent modifications can cause infinite loops or data corruption.
+*   `ConcurrentHashMap` (CHM) provides high concurrency. In 2026, it uses **CAS (Compare-And-Swap)** for empty buckets and **synchronized** on the first node of the bucket for non-empty ones. It does not lock the entire map.
 
-10. **Why is String immutable?**
-    Security, thread safety, and efficiency (String Pool).
+### 10. Why is String immutable?
+*   **String Pool:** Allows multiple variables to point to the same memory, saving space.
+*   **Security:** Parameters like database URLs or usernames cannot be changed once validated.
+*   **Thread Safety:** Naturally thread-safe because their state cannot change.
+*   **Caching:** The `hashCode` is calculated once and cached, making it fast as a key in `HashMap`.
 
----
+### 11. equals() vs. hashCode().
+*   `equals(Object o)`: Checks logical equality (e.g., do two `User` objects have the same ID?).
+*   `hashCode()`: Returns an integer for hash-based storage.
+*   **Contract:** If `a.equals(b)` is true, `a.hashCode()` **must** be the same as `b.hashCode()`. If they are not equal, the hashcodes *can* be the same (collision), but it's better if they aren't.
 
-## II. Advanced Concepts
+### 12. What is ClassLoader?
+A part of the JRE that loads classes into the JVM on demand.
+1.  **Bootstrap ClassLoader:** Loads internal classes (rt.jar, java.base).
+2.  **Platform ClassLoader:** Loads Java SE platform modules.
+3.  **Application ClassLoader:** Loads classes from the system classpath.
+It follows the **Delegation Model**: A loader first asks its parent to load the class before trying itself.
 
-11. **equals() vs. hashCode().**
-    If `equals()` is true, `hashCode()` must be the same. Always override both together.
-12. **ClassLoader.** Loads `.class` files into the JVM at runtime.
-13. **Reflection API.** Ability to inspect/modify classes and methods at runtime.
-14. **References.** **Soft** (GC if memory low), **Weak** (GC next cycle), **Phantom** (Post-mortem cleanup).
-15. **Autoboxing.** Auto-conversion between primitives (int) and Wrappers (Integer).
-16. **Serialization.** Converting an object into a byte stream for storage/transfer.
-17. **Iterators.** **Fail-fast** (throws error on change) vs. **Fail-safe** (works on copy).
-18. **volatile.** Ensures a variable is read from/written to main memory, not CPU cache.
-19. **transient.** Prevents a variable from being serialized.
-20. **Platform Independence.** Bytecode runs on any OS provided a JVM is present.
+### 13. Explain Reflection API.
+An API that allows inspecting or modifying the behavior of classes, interfaces, fields, and methods at runtime. It is used to:
+*   Instantiate objects without knowing the class name at compile time.
+*   Access `private` members (using `setAccessible(true)`).
+*   Power frameworks like Spring for Dependency Injection.
 
----
+### 14. What are Soft, Weak, and Phantom references?
+*   **Soft:** Objects are GC'd only if the JVM *needs* memory. Good for caches.
+*   **Weak:** Objects are GC'd as soon as the next GC cycle runs. Used in `WeakHashMap`.
+*   **Phantom:** Used for cleanup after an object is finalized. It is never automatically cleared by GC; you must clear it manually.
 
-## III. Java 8+ and Functional Programming
+### 15. What is Autoboxing and Unboxing?
+*   **Autoboxing:** The automatic conversion of primitive types to their wrapper objects (e.g., `int` to `Integer`).
+*   **Unboxing:** The reverse process. *Warning:* Unboxing a `null` wrapper results in a `NullPointerException`.
 
-21. **Java IO vs. NIO.** IO is blocking/stream-oriented; NIO is non-blocking/buffer-oriented.
-22. **Optional.** A wrapper to avoid `NullPointerException`.
-23. **Stream API.** Declarative data processing (filter, map, collect).
-24. **map() vs. flatMap().** `map` transforms; `flatMap` transforms and flattens nested collections.
-25. **Functional Interface.** Interface with exactly one abstract method (enables Lambdas).
+### 16. Serialization vs. Deserialization.
+*   **Serialization:** Converting an object state into a byte stream (implement `Serializable`).
+*   **Deserialization:** Reverting the byte stream back into a Java object.
+*   *Note:* Use `serialVersionUID` to ensure version compatibility.
 
----
+### 17. Fail-fast vs. Fail-safe iterators.
+*   **Fail-fast:** (e.g., `ArrayList`) Throws `ConcurrentModificationException` if the collection is modified while iterating.
+*   **Fail-safe:** (e.g., `CopyOnWriteArrayList`) Operates on a clone/copy of the data, so modifications during iteration are allowed.
 
-## IV. Concurrency & Multithreading
+### 18. What is volatile keyword?
+It ensures **Visibility**. If a variable is marked `volatile`, it is always read from/written to the main memory, skipping the CPU cache. This ensures that changes made by one thread are immediately visible to others.
 
-26. **Thread Lifecycle.** New, Runnable, Blocked, Waiting, Terminated.
-27. **Runnable vs. Callable.** `Callable` returns a value and throws checked exceptions.
-28. **ExecutorService.** Framework for managing thread pools and task execution.
-29. **Thread Pool Types.** Fixed, Cached, Scheduled, Single.
-30. **Deadlock.** Two threads waiting for each other's locks. Prevented via resource ordering.
-31. **Race Condition.** Concurrent access leading to inconsistent data.
-32. **Synchronization.** Restricting access to one thread at a time.
-33. **synchronized vs. Lock.** `Lock` API offers timeouts and fairness settings.
-34. **ReentrantLock.** A lock that can be re-acquired by the thread already holding it.
-35. **Semaphore.** Limits access to $N$ number of threads.
-36. **CountDownLatch.** Waits for $N$ events to occur before proceeding.
-37. **CyclicBarrier.** Threads wait for each other at a common point.
-38. **ForkJoinPool.** Optimized for recursive "divide and conquer" tasks.
-39. **Atomic Variables.** Thread-safe variables using CAS (e.g., `AtomicInteger`).
-40. **CAS (Compare-And-Swap).** Low-level atomic instruction for lock-free updates.
-41. **ThreadLocal.** Provides variables unique to a single thread.
-42. **Happens-Before.** A guarantee that memory writes are visible to other threads.
-43. **BlockingQueue.** A queue that blocks during "put" (if full) or "take" (if empty).
-44. **Producer-Consumer.** Classic problem solved using `BlockingQueue`.
-45. **High Performance.** Use **Virtual Threads** (Project Loom) for lightweight concurrency.
+### 19. What is transient keyword?
+Used to indicate that a field should not be serialized. For example, you would mark a `password` field as `transient` so it isn't saved to disk or sent over a network.
 
----
-
-## V. Spring & Spring Boot
-
-46. **Dependency Injection.** Objects receive dependencies rather than creating them.
-47. **Bean Lifecycle.** PostConstruct -> Init -> Use -> PreDestroy.
-48. **Stereotypes.** `@Component` (General), `@Service` (Logic), `@Repository` (Data).
-49. **Injection.** Constructor injection is the 2026 industry standard for testability.
-50. **AOP.** Separates cross-cutting concerns like logging or transactions.
-51. **Proxy.** Spring uses JDK/CGLIB proxies to wrap beans for AOP.
-52. **REST vs. SOAP.** REST (HTTP/JSON/Stateless) vs. SOAP (Protocol/XML).
-53. **Auto-Configuration.** Spring Boot's ability to guess and configure beans based on classpath.
-54. **Security Flow.** Filters intercept requests -> AuthenticationManager -> Success/Failure.
-55. **OAuth2.** Industry standard for delegated authorization.
-56. **JWT.** Stateless token-based authentication.
-
----
-
-## VI. Microservices & Distributed Systems
-
-57. **Circuit Breaker.** Prevents cascading failures (e.g., Resilience4j).
-58. **Service Discovery.** Registry (Eureka) so services can find each other.
-59. **API Gateway.** Single entry point for routing, security, and rate limiting.
-60. **Feign Client.** Declarative REST client for inter-service communication.
-61. **Load Balancer.** Distributes traffic across service instances.
-62. **Config Server.** Centralized configuration management.
-63. **Kafka.** Distributed event streaming platform.
-64. **Event-Driven.** Architecture where services react to asynchronous events.
-65. **Saga Pattern.** Manages distributed transactions across services.
-66. **Distributed Tracing.** Tracking request flow via TraceIDs (e.g., Zipkin/OpenTelemetry).
-67. **Resilience4j.** Modern replacement for Hystrix for fault tolerance.
-68. **Docker.** Containerizing the Spring Boot app and its dependencies.
-69. **Kubernetes.** Managing container scaling, health, and networking.
-70. **Blue-Green.** Release strategy to minimize downtime during updates.
+### 20. Platform independence in Java.
+The `javac` compiler converts code into **Bytecode** (.class files). Bytecode is a platform-neutral intermediate language. The **JVM** on each specific OS interprets this bytecode into native machine instructions, making the code "Write Once, Run Anywhere."
 
 ---
 
-## VII. JVM Performance & Troubleshooting
+## II. Java 8 to Java 25 & Concurrency
 
-71. **JIT Compiler.** Compiles hot code to native machine code at runtime.
-72. **Metaspace.** Replaced PermGen; uses native memory for class metadata.
-73. **Heap Dump.** Snapshot of memory used to find leaks (MAT tool).
-74. **OutOfMemoryError.** Troubleshooting via `-XX:+HeapDumpOnOutOfMemoryError`.
-75. **GC Tuning.** Tuning `-Xmx`, `-Xms`, and Pause Time goals.
-76. **Stop-The-World.** Pausing application threads for GC.
-77. **Escape Analysis.** JVM optimization to allocate objects on the stack.
-78. **Object Pooling.** Reusing objects (e.g., DB connections) to save overhead.
-79. **ClassLoader Leak.** Common in web apps when classes aren't unloaded.
-80. **Profiling Tools.** JFR (Flight Recorder), VisualVM, JProfiler.
-81. **JMX.** Technology for monitoring and managing the JVM.
-82. **Memory Thrashing.** Excessive paging/swapping leading to performance collapse.
-83. **CPU Profiling.** Finding methods consuming the most CPU cycles.
-84. **Asynchronous.** Non-blocking execution using `CompletableFuture`.
-85. **Reactive.** Non-blocking data streams (Spring WebFlux).
+### 21. Java IO vs. NIO.
+*   **IO (Input/Output):** Stream-oriented and **blocking**. One thread handles one connection.
+*   **NIO (New IO):** Buffer-oriented and **non-blocking**. It uses **Selectors** to allow one thread to manage multiple "Channels" (connections), making it highly scalable for servers.
+
+### 22. What is Optional in Java 8?
+A container object used to represent the presence or absence of a value. It replaces `null` checks with a functional API (`.map()`, `.orElse()`, `.ifPresent()`), significantly reducing `NullPointerExceptions`.
+
+### 23. What is Stream API?
+A pipeline of functional operations (filter, map, sorted, collect) performed on a sequence of elements.
+*   **Lazy Evaluation:** Operations are only executed when a "Terminal Operation" (like `.collect()`) is called.
+*   **Parallelism:** Easily switch to multi-core processing with `.parallelStream()`.
+
+### 24. map() vs. flatMap().
+*   **map():** Transforms each element into another value (e.g., a list of Users to a list of UserNames).
+*   **flatMap():** Transforms each element into a stream and then flattens those streams into one (e.g., a list of Departments to a single list of all Employees).
+
+### 25. Functional Interface.
+An interface with exactly one abstract method (e.g., `Predicate`, `Function`, `Consumer`). In 2026, these are the foundation for Lambda expressions and Method References.
+
+### 26. Thread lifecycle.
+1.  **New:** Thread is created but not started.
+2.  **Runnable:** `start()` called; eligible for CPU time.
+3.  **Blocked:** Waiting for a monitor lock.
+4.  **Waiting:** Waiting indefinitely for another thread (e.g., `wait()`).
+5.  **Timed_Waiting:** Waiting for a specific period (e.g., `sleep(1000)`).
+6.  **Terminated:** Execution finished.
+
+### 27. Runnable vs. Callable.
+*   **Runnable:** `run()` method returns `void` and cannot throw checked exceptions.
+*   **Callable:** `call()` method returns a `Future<V>` result and can throw checked exceptions.
+
+### 28. ExecutorService.
+A framework to manage thread pools. Instead of creating `new Thread()` manually, you submit tasks to the `ExecutorService`, which reuses a pool of worker threads, improving performance and resource management.
+
+### 29. Types of Thread Pools.
+*   **FixedThreadPool:** Fixed number of threads.
+*   **CachedThreadPool:** Creates threads as needed, deletes idle ones.
+*   **ScheduledThreadPool:** For delayed or periodic tasks.
+*   **SingleThreadExecutor:** One thread, sequential execution.
+
+### 30. Deadlock and prevention.
+Deadlock occurs when Thread A holds Lock 1 and waits for Lock 2, while Thread B holds Lock 2 and waits for Lock 1.
+*   **Prevention:** Acquire locks in a consistent order; use `tryLock()` with a timeout; keep synchronization blocks as small as possible.
+
+### 31. Race condition.
+A situation where the output depends on the timing of uncontrollable events (multiple threads updating a shared counter). Solved using `synchronized`, `Lock`, or `AtomicInteger`.
+
+### 32. Synchronization.
+A mechanism to ensure that only one thread can access a resource at a time.
+*   **Synchronized Method:** Locks the current object (`this`).
+*   **Synchronized Block:** Locks a specific object.
+
+### 33. synchronized vs. Lock.
+*   `synchronized` is implicit and easier, but cannot be interrupted or timed out.
+*   `Lock` (ReentrantLock) is explicit. It allows for `tryLock()` (non-blocking), fairness settings, and the ability to interrupt a thread waiting for the lock.
+
+### 34. ReentrantLock.
+A lock that allows the thread holding it to re-acquire the same lock multiple times without deadlocking itself (it keeps a hold count).
+
+### 35. Semaphore.
+A synchronization tool that maintains a set of "permits." Threads `acquire()` a permit to enter a critical section and `release()` it when done. Useful for limiting the number of concurrent database connections.
+
+### 36. CountDownLatch.
+A synchronization aid that allows one thread to wait until a set of operations being performed in other threads completes. It cannot be reset (one-time use).
+
+### 37. CyclicBarrier.
+Allows a set of threads to all wait for each other to reach a common barrier point. Unlike `CountDownLatch`, it can be reset and reused.
+
+### 38. ForkJoinPool.
+An `ExecutorService` for "Divide and Conquer" tasks. It uses a **Work-Stealing** algorithm: idle threads "steal" tasks from the back of the dequeues of busy threads to maximize CPU utilization.
+
+### 39. Atomic variables.
+Classes like `AtomicInteger` and `AtomicReference` use low-level CPU instructions (CAS) to provide thread-safe operations without the overhead of heavy locking.
+
+### 40. Compare-And-Swap (CAS).
+An atomic instruction used in multithreading to achieve synchronization without locks. It compares the current value of a variable to an "expected" value; if they match, it updates it to the "new" value.
+
+### 41. ThreadLocal.
+Provides variables that are local to a specific thread. Each thread has its own independently initialized copy of the variable. Used for keeping "User IDs" or "Transaction IDs" across method calls in a web request.
+
+### 42. Happens-Before relationship.
+A formal guarantee in the Java Memory Model. If action A happens-before action B, then the results of action A are visible to action B (e.g., unlocking a monitor happens-before any subsequent locking of that monitor).
+
+### 43. BlockingQueue.
+A queue that supports operations that wait for the queue to become non-empty when retrieving, and wait for space when storing.
+
+### 44. Producer-Consumer problem.
+A classic concurrency problem. Producers put data in a buffer; consumers take it out. Solved easily in Java using `ArrayBlockingQueue`.
+
+### 45. Designing high-performance multithreading.
+In 2026, the strategy shifts toward **Virtual Threads** (introduced in Project Loom). They are M:N scheduled (millions of virtual threads mapped to a few OS threads), allowing developers to write simple blocking code that is as performant as complex reactive code.
 
 ---
 
-## VIII. Design Patterns & Architecture
+## III. Spring Framework & Microservices
 
-86. **Singleton.** One instance per JVM.
-87. **Factory.** Creates objects without exposing creation logic.
-88. **Builder.** Complex object construction step-by-step.
-89. **Strategy.** Switching algorithms at runtime.
-90. **Observer.** One-to-many notification system.
-91. **Proxy.** Wrapper to control access to an object.
-92. **Circuit Breaker.** (Architectural pattern for fault tolerance).
-93. **CQRS.** Separating Read and Write models.
-94. **Event Sourcing.** Storing state as a series of events.
-95. **SOLID.** Single Responsibility, Open-Closed, Liskov, Interface Segregation, Dependency Inversion.
-96. **Microservices vs. Monolith.** Distributed vs. Centralized codebases.
-97. **CAP Theorem.** Balancing Consistency, Availability, and Partition Tolerance.
-98. **Idempotency.** Ensuring an API call has the same effect regardless of how many times it's called.
-99. **Rate Limiting.** Protecting APIs from abuse (Token Bucket/Leaky Bucket).
-100. **High-Traffic Design.** Use of Caching, Load Balancing, and Non-blocking architectures.
+### 46. Dependency Injection (DI).
+A design pattern where a container (Spring) provides an object's dependencies at runtime rather than the object creating them itself. This makes code loosely coupled and easily testable.
+
+### 47. Spring Bean lifecycle.
+1.  **Instantiation.**
+2.  **Populate Properties (DI).**
+3.  **Aware Interfaces** (`BeanNameAware`, etc.).
+4.  **BeanPostProcessor (Before).**
+5.  **Initialization** (`@PostConstruct` or `InitializingBean`).
+6.  **BeanPostProcessor (After).**
+7.  **Ready to use.**
+8.  **Destruction** (`@PreDestroy`).
+
+### 48. @Component vs. @Service vs. @Repository.
+*   `@Component`: General-purpose bean.
+*   `@Service`: Stereotype for business logic.
+*   `@Repository`: Stereotype for DAO layer; adds automatic persistence exception translation.
+
+### 49. Constructor Injection vs. Field Injection.
+*   **Field:** Convenient but makes testing harder and allows circular dependencies.
+*   **Constructor:** Preferred in 2026. It ensures the bean is fully initialized before use and allows fields to be `final` (immutability).
+
+### 50. AOP in Spring.
+Aspect-Oriented Programming allows separating cross-cutting concerns (logging, security, transactions) from the main business logic using "Aspects" and "Advices."
+
+### 51. Proxy in Spring.
+Spring wraps beans in **Proxies** to implement AOP and `@Transactional`.
+*   **JDK Proxy:** Used if the class implements an interface.
+*   **CGLIB Proxy:** Used if the class does not implement an interface (subclassing).
+
+### 52. REST vs. SOAP.
+*   **REST:** Architectural style, uses JSON/HTTP, stateless, high performance.
+*   **SOAP:** Protocol, uses XML, can be stateful, has built-in security standards (WS-Security).
+
+### 53. Spring Boot Auto-Configuration.
+The `@EnableAutoConfiguration` (part of `@SpringBootApplication`) tells Spring Boot to look at the classpath and "guess" what beans you need. (e.g., if it sees `h2.jar`, it automatically creates an H2 DataSource).
+
+### 54. Spring Security flow.
+1.  Request hits a **Filter Chain**.
+2.  **AuthenticationFilter** extracts credentials.
+3.  **AuthenticationManager** delegates to **AuthenticationProvider**.
+4.  **UserDetailsService** loads user from DB.
+5.  If successful, the **SecurityContext** is updated.
+
+### 55. OAuth2.
+An authorization framework that allows a "Client" to access resources on a "Resource Server" on behalf of a "User" without sharing their password, using "Access Tokens."
+
+### 56. JWT (JSON Web Token).
+A compact, stateless way to transmit claims. It is signed (using a secret or key) so it can be verified. It consists of a Header, Payload (data), and Signature.
+
+### 57. Circuit Breaker pattern.
+Prevents a failing service from causing a system-wide crash. If a service call fails repeatedly, the circuit "opens," and all subsequent calls fail fast or return a fallback, giving the service time to recover.
+
+### 58. Service Discovery (Eureka).
+In a dynamic environment, IP addresses of services change. Eureka acts as a phone book where services register themselves so others can find them by service name.
+
+### 59. API Gateway.
+The single entry point for all clients. It handles routing, security (JWT validation), rate limiting, and request aggregation.
+
+### 60. Feign Client.
+A declarative REST client for Spring Boot. You simply write an interface and annotate it; Spring creates the implementation to call other microservices.
+
+### 61. Load Balancer.
+Distributes traffic across multiple instances of a service. Spring Cloud LoadBalancer is the standard in 2026.
+
+### 62. Config Server.
+Centralizes the management of configuration properties for all microservices in all environments (Dev, QA, Prod), usually backed by a Git repository.
+
+### 63. Kafka architecture.
+A distributed event streaming platform.
+*   **Producer:** Sends messages.
+*   **Broker:** Stores messages.
+*   **Topic:** Logical name for a stream.
+*   **Partition:** How topics are split for scale.
+*   **Consumer Group:** Group of consumers sharing the workload.
+
+### 64. Event-Driven Architecture.
+A design pattern where services communicate through events. It increases decoupling because the producer doesn't know who is consuming the message.
+
+### 65. Saga Pattern.
+Manages distributed transactions in microservices.
+*   **Choreography:** Services exchange events without a central coordinator.
+*   **Orchestration:** A central coordinator tells services what local transactions to run.
+
+### 66. Distributed Tracing.
+Using a **Trace ID** that follows a request through multiple microservices. Tools like Zipkin or Micrometer Tracing visualize where bottlenecks or failures occur.
+
+### 67. Resilience4j.
+The standard fault-tolerance library in 2026 (replacing Hystrix). It provides modules for Circuit Breakers, Rate Limiters, Retries, and Bulkheads.
+
+### 68. Docker with Spring Boot.
+Docker packages the Spring Boot JAR + JRE + OS config into a single **Image**, ensuring the application runs identically on a developer's laptop and in the cloud.
+
+### 69. Kubernetes deployment strategies.
+*   **Rolling Update:** Replaces pods one by one.
+*   **Canary:** Routes 5% of traffic to the new version to test for bugs.
+*   **Recreate:** Kills all old pods before starting new ones.
+
+### 70. Blue-Green deployment.
+Two identical production environments. Blue is live. You deploy to Green, test it, and then switch the router. If Green fails, you switch back to Blue instantly.
 
 ---
-*Created for 2026 Java Technical Interviews.*
+
+## IV. JVM Tuning & Troubleshooting
+
+### 71. JIT Compiler.
+The Just-In-Time compiler translates Bytecode into native machine code at runtime. It focuses on "hotspots" (code executed frequently) to make Java apps run as fast as native C++.
+
+### 72. Metaspace vs. PermGen.
+`PermGen` was part of the heap and had a fixed size. `Metaspace` (introduced in Java 8) uses native memory. It is more flexible and significantly reduces `java.lang.OutOfMemoryError: PermGen space`.
+
+### 73. Heap Dump analysis.
+A snapshot of the heap memory. Tools like **Eclipse MAT** or **VisualVM** analyze these dumps to identify which objects are consuming memory and find leak suspects.
+
+### 74. OutOfMemoryError troubleshooting.
+1.  Identify the type (Heap, Metaspace, or Stack).
+2.  Enable `-XX:+HeapDumpOnOutOfMemoryError`.
+3.  Analyze the dump for memory leaks or excessive object creation.
+4.  Tune `-Xmx` (Max Heap) or `-Xss` (Stack size).
+
+### 75. GC tuning.
+Optimizing GC for **Latency** (pause times) or **Throughput** (amount of work). In 2026, most tuning involves setting the pause goal for **G1** or **ZGC** (e.g., `-XX:MaxGCPauseMillis=200`).
+
+### 76. Stop-The-World events.
+Moments when the JVM pauses all application threads to perform garbage collection. Minimizing STW is the primary goal of modern collectors like ZGC.
+
+### 77. Escape Analysis.
+A JVM optimization. If the compiler determines that an object created in a method never "escapes" that method, it may allocate the object on the **Stack** instead of the Heap, eliminating GC overhead.
+
+### 78. Object Pooling.
+Reusing objects (like DB connections) instead of creating new ones to save time and memory. *Avoid for simple objects, as modern GCs are faster than pools for small objects.*
+
+### 79. ClassLoader memory leak.
+Common in application servers. If a classloader is not garbage collected (often due to static references), all the classes it loaded stay in memory, eventually causing an OOM in Metaspace.
+
+### 80. JVM Profiling tools.
+*   **JFR (Java Flight Recorder):** Extremely low overhead; record production data.
+*   **JVisualVM:** General-purpose monitoring.
+*   **JProfiler:** Commercial, deep analysis.
+
+### 81. JMX.
+Java Management Extensions. A standard for monitoring and managing the JVM. You can expose your own "MBeans" to monitor custom app metrics via JConsole.
+
+### 82. Memory Thrashing.
+When the system spends more time moving data in/out of memory (paging or excessive GC) than actually executing instructions.
+
+### 83. CPU profiling.
+The process of identifying "Hotspots"—methods or threads that consume the most CPU cycles—using sampling or instrumentation.
+
+### 84. Asynchronous processing.
+Executing tasks in the background using `CompletableFuture` or Spring's `@Async`. This allows the main thread to return a response to the user while work continues in the background.
+
+### 85. Reactive Programming.
+A non-blocking paradigm centered around data streams. Used in **Spring WebFlux** to handle high-concurrency I/O with a small number of threads.
+
+---
+
+## V. Design Patterns & System Design
+
+### 86. Singleton pattern (thread-safe).
+Ensures a class has only one instance. The **Enum** implementation is the most thread-safe and robust against serialization/reflection attacks in 2026.
+
+### 87. Factory vs. Abstract Factory.
+*   **Factory Method:** Defines an interface for creating *one* object.
+*   **Abstract Factory:** Creates families of related objects (e.g., a "UI Factory" that creates both Buttons and TextBoxes for a specific OS).
+
+### 88. Builder pattern.
+Used for creating complex objects with many parameters. It provides a readable, fluent API and avoids "telescoping constructors."
+
+### 89. Strategy pattern.
+Defines a family of algorithms and makes them interchangeable at runtime (e.g., switching between `CreditCardPayment` and `CryptoPayment`).
+
+### 90. Observer pattern.
+A one-to-many dependency where when the "Subject" changes state, all its "Observers" are notified automatically (basis for event listeners).
+
+### 91. Proxy pattern.
+Provides a surrogate or placeholder for another object to control access to it (e.g., Hibernate's "Lazy Loading").
+
+### 92. Circuit Breaker pattern.
+(See #57).
+
+### 93. CQRS.
+Command Query Responsibility Segregation. It separates the "Write" model from the "Read" model, often using different databases to optimize each.
+
+### 94. Event Sourcing.
+Instead of storing the *current state* of an object, you store a *history of events*. You can reconstruct the current state by replaying all historical events.
+
+### 95. SOLID principles.
+*   **S:** Single Responsibility.
+*   **O:** Open/Closed (Open for extension, closed for modification).
+*   **L:** Liskov Substitution (Subtypes must be substitutable for base types).
+*   **I:** Interface Segregation.
+*   **D:** Dependency Inversion.
+
+### 96. Microservices vs. Monolith.
+*   **Monolith:** Single code base; easy to deploy; hard to scale; single point of failure.
+*   **Microservices:** Distributed; independent scaling; complex deployment; high fault tolerance.
+
+### 97. CAP Theorem.
+States that in a distributed system, you can only have two of: **Consistency**, **Availability**, and **Partition Tolerance**.
+
+### 98. Idempotency.
+An operation is idempotent if it can be performed multiple times without changing the result beyond the initial application (e.g., a `PUT` request in REST).
+
+### 99. Rate Limiting design.
+Used to prevent API abuse. Common algorithms include **Token Bucket** and **Leaky Bucket**. Implementation in Spring usually involves a Gateway or Redis.
+
+### 100. Design a high-traffic REST API.
+1.  **Horizontal Scaling:** Use a Load Balancer.
+2.  **Caching:** Use Redis for hot data and CDNs for static assets.
+3.  **Concurrency:** Use Virtual Threads (Java 21+) or Reactive code.
+4.  **Database:** Use Read-Replicas and Indexing.
+5.  **Asynchronicity:** Use Message Queues (Kafka/RabbitMQ) for long-running tasks.
+
+---
+*Maintained by the Tech Interview Community. Last Updated: Jan 2026.*
