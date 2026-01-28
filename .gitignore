@@ -1,0 +1,14 @@
+# IDE-specific directories
+.idea/
+.vscode/
+
+# Dependency directories
+node_modules/
+vendor/
+
+# Compiled output and temporary files (examples)
+/target/
+/build/
+*.log
+*.cache
+*.suo

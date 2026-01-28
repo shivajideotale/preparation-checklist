@@ -421,14 +421,14 @@ States that in a distributed system, you can only have two of: **Consistency**, 
 An operation is idempotent if it can be performed multiple times without changing the result beyond the initial application (e.g., a `PUT` request in REST).
 
 ### 99. Rate Limiting design.
-Used to prevent API abuse. Common algorithms include **Token Bucket** and **Leaky Bucket**. Implementation in Spring usually involves a Gateway or Redis.
+>Used to prevent API abuse. Common algorithms include **Token Bucket** and **Leaky Bucket**. Implementation in Spring usually involves a Gateway or Redis.
 
 ### 100. Design a high-traffic REST API.
-1.  **Horizontal Scaling:** Use a Load Balancer.
-2.  **Caching:** Use Redis for hot data and CDNs for static assets.
-3.  **Concurrency:** Use Virtual Threads (Java 21+) or Reactive code.
-4.  **Database:** Use Read-Replicas and Indexing.
-5.  **Asynchronicity:** Use Message Queues (Kafka/RabbitMQ) for long-running tasks.
+>1.  **Horizontal Scaling:** Use a Load Balancer.
+>2.  **Caching:** Use Redis for hot data and CDNs for static assets.
+>3.  **Concurrency:** Use Virtual Threads (Java 21+) or Reactive code.
+>4.  **Database:** Use Read-Replicas and Indexing.
+>5.  **Asynchronicity:** Use Message Queues (Kafka/RabbitMQ) for long-running tasks.
 
 ---
 *Maintained by the Tech Interview Community. Last Updated: Jan 2026.*
