@@ -139,5 +139,69 @@ This guide provides an architectural and deep-dive technical analysis of the 20 
 *   **Compact Strings:** Java 9+ stores strings as `byte[]` instead of `char[]`, potentially cutting heap usage by 30-50%.
 *   **Strong Encapsulation:** Prevents certain reflection hacks, which might slow down older libraries.
 
----
-*Created for JVM Performance Engineers.*
+
+### 21. Logging Increase Crashed Production
+*   **The Symptom:** After changing log levels to `DEBUG` or `TRACE` to find a bug, the service became unresponsive.
+*   **Root Cause:** **I/O Blocking & String Allocation.**
+    *   **Synchronous Logging:** Most loggers are synchronous by default; if the disk/network can't keep up, the application thread blocks.
+    *   **Allocation Pressure:** Logging creates millions of temporary `String` objects, triggering aggressive GC.
+*   **Solution:** Use [Logback AsyncAppender](https://logback.qos.ch) and parameterized logging (`log.debug("User: {}", user)`) to avoid string concatenation.
+
+### 29. App Crashes Only During Peak Hours
+*   **The Symptom:** The system is stable at 50% load but crashes or times out at 90%.
+*   **Root Cause:** **Resource Exhaustion Patterns.**
+    *   **Connection Leaks:** Small leaks that aren't noticeable at low traffic saturate the pool during peaks.
+    *   **Queuing Delay:** Requests wait in a queue; once the wait time + processing time > client timeout, the request is useless but still consumes CPU.
+*   **Action:** Look for "Thread Starvation" and "DB Pool Saturation" metrics in [Grafana](https://grafana.com).
+
+### 22. Fix Fails Under Concurrency
+*   **The Symptom:** A logic fix works perfectly in local testing but fails in production.
+*   **Root Cause:** **Visibility and Atomicity Issues.**
+    *   **Visibility:** Without the `volatile` keyword, a thread on CPU Core 1 may not see a variable update made by a thread on CPU Core 2.
+    *   **Atomicity:** Logic like `if (count < 10) { count++; }` is not thread-safe without external synchronization or [AtomicInteger](https://docs.oracle.com).
+*   **Solution:** Follow the [Java Memory Model (JMM)](https://docs.oracle.com) standards.
+
+### 23. Threads Waiting, No Deadlock
+*   **The Symptom:** Threads are stuck, but `jstack` reports "No deadlocks detected."
+*   **Root Cause:** **Livelock or Starvation.**
+    *   **Livelock:** Threads are constantly changing state in response to each other but making no progress (like two people trying to pass each other in a hallway).
+    *   **Starvation:** A low-priority thread can never acquire a lock because high-priority threads keep jumping ahead.
+*   **Action:** Analyze thread dumps for threads in the `TIMED_WAITING` or `PARKED` states.
+
+### 25. Parallel Streams Slower Than Serial
+*   **The Symptom:** Enabling `.parallelStream()` increased response times.
+*   **Root Cause:** **ForkJoinPool Contention.** All parallel streams share a single, global `Common Pool`.
+    *   **Overhead:** For small tasks, the cost of splitting/merging data exceeds the execution time.
+    *   **Blocking:** If one parallel stream performs I/O, it blocks threads for *all* other parallel streams in the JVM.
+*   **Solution:** Use [Parallel Streams](https://docs.oracle.com) only for CPU-heavy tasks with large datasets.
+
+
+### 24. Cache Initially Helps, Then Degrades
+*   **The Symptom:** High performance for 1 hour, followed by massive latency spikes.
+*   **Root Cause:** **GC Graph Scanning.** Large on-heap caches (millions of objects) force the Garbage Collector to scan every object during "Mark" cycles.
+*   **Solution:** Use an off-heap cache like [Caffeine](https://github.com) with a proper eviction policy (TTL/Size).
+
+### 26. Latency vs. Throughput Tuning
+*   **The Concept:** Optimizing for one usually hurts the other.
+*   **Deep Dive:**
+    *   **Latency (ZGC/Shenandoah):** Does work concurrently with application threads. This uses more total CPU (lower throughput) to keep individual pauses short.
+    *   **Throughput (Parallel GC):** Stops all threads to clean memory efficiently. This maximizes total work done but causes "Stop-the-World" pauses (high latency).
+*   **Action:** Align your `-XX:+Use...GC` flag with your [SRE Service Level Objectives](https://sre.google).
+
+### 27. Small Change, Massive GC Pressure
+*   **The Symptom:** A tiny code change (e.g., inside a loop) caused GC pauses to double.
+*   **Root Cause:** **Hidden Allocations.**
+    *   **Autoboxing:** Changing `long` to `Long` in a loop.
+    *   **String Concatenation:** Using `+` in a loop instead of `StringBuilder`.
+*   **Action:** Profile the application with [Java Flight Recorder (JFR)](https://docs.oracle.com) to see "Allocation Rate by Class."
+
+
+### 28. Retry Mechanism System Overload
+*   **The Symptom:** A 1-second DB flicker caused the entire system to stay down for 10 minutes.
+*   **Root Cause:** **The Retry Storm.** Without backoff, every failed request retries immediately, hammering the already-struggling DB with 3x-5x the normal traffic.
+*   **Solution:** Implement **Exponential Backoff and Jitter** using [Resilience4j](https://resilience4j.readme.io).
+
+### 30. Real-World Production Disaster: The "Default"
+*   **The Story:** A common production issue is relying on **Default Library Configurations**.
+*   **Example:** Using the default `Hystrix` or `Apache HttpClient` without setting explicit connection timeouts. When a third-party API becomes "slow" (but doesn't fail), every thread in your JVM hangs indefinitely waiting for a response that never comes.
+*   **Lesson:** **Explicitly define every timeout.** Never trust a library's default.
