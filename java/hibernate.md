@@ -153,6 +153,7 @@ Specifies how class hierarchies are stored using the `@Inheritance` annotation.
 
 ```java
 import jakarta.persistence.*;
+
 import java.util.Date;
 
 @Entity
@@ -187,37 +188,86 @@ public class Order {
 
 ## 💻 6. Hibernate Session Management
 
-The [Hibernate Session interface](https://docs.jboss.org) acts as the primary runtime bridge between a Java application and the database, managing the lifecycle of mapped entity classes.
+The [Hibernate Session interface](https://docs.jboss.org) acts as the primary runtime bridge between a Java application
+and the database, managing the lifecycle of mapped entity classes.
 
 ## 🚀 Core Persistence Methods
 
-
-| Method | Description |
-| :--- | :--- |
-| **`persist(entity)`** | Makes a transient instance persistent. Does not guarantee immediate `INSERT`; it schedules it for the next flush. |
-| **`merge(entity)`** | Copies state from a detached object to a managed entity. Best for updating records from [closed sessions](https://www.baeldung.com). |
-| **`save(entity)`** | *Deprecated.* Use `persist()` for modern, JPA-compliant code. Returns the identifier immediately. |
-| **`update(entity)`** | *Deprecated.* Reattaches a detached instance. Use `merge()` for better compatibility. |
+| Method                | Description                                                                                                                          |
+|:----------------------|:-------------------------------------------------------------------------------------------------------------------------------------|
+| **`persist(entity)`** | Makes a transient instance persistent. Does not guarantee immediate `INSERT`; it schedules it for the next flush.                    |
+| **`merge(entity)`**   | Copies state from a detached object to a managed entity. Best for updating records from [closed sessions](https://www.baeldung.com). |
+| **`save(entity)`**    | *Deprecated.* Use `persist()` for modern, JPA-compliant code. Returns the identifier immediately.                                    |
+| **`update(entity)`**  | *Deprecated.* Reattaches a detached instance. Use `merge()` for better compatibility.                                                |
 
 ## 🔍 Retrieval Methods
 
-*   **`get(Entity.class, id)`**: Hits the database immediately. Returns `null` if the record is not found.
-*   **`load(Entity.class, id)`**: Returns a **Proxy** (placeholder). Hits the database only when a property is accessed. Throws an exception if the record is missing.
+* **`get(Entity.class, id)`**: Hits the database immediately. Returns `null` if the record is not found.
+* **`load(Entity.class, id)`**: Returns a **Proxy** (placeholder). Hits the database only when a property is accessed.
+  Throws an exception if the record is missing.
 
 ### `get()` vs `load()` Comparison
 
-
-| Feature | `get()` | `load()` |
-| :--- | :--- | :--- |
-| **Database Hit** | Immediate | Lazy (Delayed) |
-| **Missing Record** | Returns `null` | Throws `ObjectNotFoundException` |
-| **Performance** | Slower (Always hits DB) | Faster (If only ID is required) |
+| Feature            | `get()`                 | `load()`                         |
+|:-------------------|:------------------------|:---------------------------------|
+| **Database Hit**   | Immediate               | Lazy (Delayed)                   |
+| **Missing Record** | Returns `null`          | Throws `ObjectNotFoundException` |
+| **Performance**    | Slower (Always hits DB) | Faster (If only ID is required)  |
 
 ## 🧹 Deletion & Synchronization
 
-*   **`remove(entity)`**: Deletes a managed entity instance from the database.
-*   **`flush()`**: Forces synchronization of the in-memory state with the database (executes pending SQL).
-*   **`clear()`**: Evicts all loaded entities from the session, making them **detached**.
-*   **`close()`**: Ends the session and releases the database connection.
+* **`remove(entity)`**: Deletes a managed entity instance from the database.
+* **`flush()`**: Forces synchronization of the in-memory state with the database (executes pending SQL).
+* **`clear()`**: Evicts all loaded entities from the session, making them **detached**.
+* **`close()`**: Ends the session and releases the database connection.
 
 ---
+
+# Hibernate Caching Architecture
+
+Hibernate optimizes database performance through a multi-layer [Caching System](https://docs.jboss.org). This reduces
+the number of SQL queries by storing frequently used entities in memory.
+
+## 🧱 Cache Hierarchy
+
+### 1. First-Level Cache (L1)
+
+The **L1 Cache** is the default, mandatory cache associated with the [Session object](https://www.baeldung.com).
+
+* **Scope:** Local to the current session.
+* **Persistence Context:** Every object fetched via `get()` or `load()` is stored here.
+* **Automatic:** You don't need to configure anything.
+* **Clearing:** Managed via `session.evict(entity)` or `session.clear()`.
+
+### 2. Second-Level Cache (L2)
+
+The **L2 Cache** is an optional, pluggable cache shared across the entire `SessionFactory`.
+
+* **Scope:** Global (Shared across all sessions).
+* **Providers:** Requires libraries like [Ehcache](https://www.baeldung.com) or [Infinispan](https://infinispan.org).
+* **Configuration:** Must be explicitly enabled in `hibernate.cfg.xml`.
+
+### 3. Query Cache
+
+Stores the results of specific queries (the IDs of the entities returned).
+
+* **Requirement:** Must have L2 Cache enabled to work effectively.
+* **Usage:** Enable globally and then set `query.setCacheable(true)` on specific HQL/Criteria queries.
+
+---
+
+## ⚙️ Configuration Example
+
+To enable **L2 Caching** with Ehcache, add these properties to your configuration:
+
+```xml
+<!-- Enable L2 Cache -->
+<property name="hibernate.cache.use_second_level_cache">true</property>
+
+<!-- Specify Cache Provider -->
+<property name="hibernate.cache.region.factory_class">
+    org.hibernate.cache.ehcache.EhcacheRegionFactory
+</property>
+
+<!-- Enable Query Cache -->
+<property name="hibernate.cache.use_query_cache">true</property>
