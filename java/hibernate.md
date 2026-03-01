@@ -38,18 +38,19 @@ These are the essential building blocks for every persistent class.
 ---
 
 ## 🔗 2. Association & Relationship Mapping
-Defines how tables are linked via foreign keys.
-Detailed Example: Department and Employee
+Defines how tables are linked via foreign keys. 
+Detailed Example: Department and Employee.
+In this scenario, many Employee entities belong to one Department.
 
 ###  1. The Owning Side (Many-to-One)
-*   **Description:** Many records of this entity link to one record of another (e.g., many Employees in one Dept). The **"Many"** side is the owner of the relationship because it holds the foreign key `(dept_id)` in the database.
+*   **Description:** The **"Many"** side is the owner of the relationship because it holds the foreign key `(dept_id)` in the database.
 *   **Example:**
     ```java
     @Entity
     public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+        private Long id;
     
         private String name;
     
@@ -69,7 +70,7 @@ Detailed Example: Department and Employee
     public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+        private Long id;
     
         private String name;
     
