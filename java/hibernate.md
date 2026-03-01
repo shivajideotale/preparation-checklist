@@ -109,6 +109,14 @@ In this scenario, many Employee entities belong to one Department.
   owns" the relationship.
 * `CascadeType`:   Controls how operations like PERSIST or REMOVE flow from parent to child. CascadeType.ALL is common
   for parent-child relationships.
+    * `ALL`: Propagates all operations (persist, merge, remove, refresh, detach). Usually used for parent-child
+      relationships where the child cannot exist without the parent.
+    * `PERSIST`: When you save the parent, the child is automatically saved.
+    * `MERGE`: When you update the parent, the child's state is also synced with the database.
+    * `REMOVE`: Deleting the parent automatically deletes all associated children.
+    * `REFRESH`: Reloads the state of the child from the database when the parent is reloaded.
+    * `DETACH`: If the parent is removed from the Hibernate session (becoming "detached"), the child is detached too.
+
 * `FetchType`:
     * `LAZY`:    Loads the association only when you call the getter (highly recommended for performance in
       collections).
@@ -116,6 +124,7 @@ In this scenario, many Employee entities belong to one Department.
 * `@JoinColumn`:   Defines the physical mapping of the foreign key in the database table.
 * `orphanRemoval`:    If set to true, removing a child from the parent's collection will also delete that child record
   from the database.
+*
 
 ---
 
@@ -172,3 +181,43 @@ public class Order {
 
     // Getters and Setters...
 }
+```
+
+---
+
+## 💻 6. Hibernate Session Management
+
+The [Hibernate Session interface](https://docs.jboss.org) acts as the primary runtime bridge between a Java application and the database, managing the lifecycle of mapped entity classes.
+
+## 🚀 Core Persistence Methods
+
+
+| Method | Description |
+| :--- | :--- |
+| **`persist(entity)`** | Makes a transient instance persistent. Does not guarantee immediate `INSERT`; it schedules it for the next flush. |
+| **`merge(entity)`** | Copies state from a detached object to a managed entity. Best for updating records from [closed sessions](https://www.baeldung.com). |
+| **`save(entity)`** | *Deprecated.* Use `persist()` for modern, JPA-compliant code. Returns the identifier immediately. |
+| **`update(entity)`** | *Deprecated.* Reattaches a detached instance. Use `merge()` for better compatibility. |
+
+## 🔍 Retrieval Methods
+
+*   **`get(Entity.class, id)`**: Hits the database immediately. Returns `null` if the record is not found.
+*   **`load(Entity.class, id)`**: Returns a **Proxy** (placeholder). Hits the database only when a property is accessed. Throws an exception if the record is missing.
+
+### `get()` vs `load()` Comparison
+
+
+| Feature | `get()` | `load()` |
+| :--- | :--- | :--- |
+| **Database Hit** | Immediate | Lazy (Delayed) |
+| **Missing Record** | Returns `null` | Throws `ObjectNotFoundException` |
+| **Performance** | Slower (Always hits DB) | Faster (If only ID is required) |
+
+## 🧹 Deletion & Synchronization
+
+*   **`remove(entity)`**: Deletes a managed entity instance from the database.
+*   **`flush()`**: Forces synchronization of the in-memory state with the database (executes pending SQL).
+*   **`clear()`**: Evicts all loaded entities from the session, making them **detached**.
+*   **`close()`**: Ends the session and releases the database connection.
+
+---
