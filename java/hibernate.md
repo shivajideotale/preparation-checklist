@@ -86,7 +86,14 @@ In this scenario, many Employee entities belong to one Department.
         }
     }
     ```
-
+### Critical Association Details
+* `mappedBy`:   Essential for bidirectional relationships. It must point to the field name in the child class that "owns" the relationship.
+* `CascadeType`:   Controls how operations like PERSIST or REMOVE flow from parent to child. CascadeType.ALL is common for parent-child relationships.
+* `FetchType`: 
+  * `LAZY`:    Loads the association only when you call the getter (highly recommended for performance in collections).
+  * `EAGER`:     Loads the association immediately with the parent entity (default for @ManyToOne).
+* `@JoinColumn`:   Defines the physical mapping of the foreign key in the database table.
+* `orphanRemoval`:    If set to true, removing a child from the parent's collection will also delete that child record from the database.
 ---
 
 ## ⚙️ 3. Column & Behavioral Customization
