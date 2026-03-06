@@ -150,18 +150,18 @@ JVM Internals
 
 ForkJoinPool (Carrier Threads)
 ┌─────────────────────────────────────────────────────┐
-│  Carrier-1     Carrier-2     Carrier-3     Carrier-4 │
-│  [VT-101]      [VT-205]      [VT-310]      [VT-412]  │
-│  running       running       running       running    │
+│  Carrier-1     Carrier-2     Carrier-3     Carrier-4│
+│  [VT-101]      [VT-205]      [VT-310]      [VT-412] │
+│  running       running       running       running  │
 └─────────────────────────────────────────────────────┘
                     │
     When VT-101 hits I/O wait:
                     │
                     ▼
 ┌─────────────────────────────────────────────────────┐
-│  Carrier-1     Carrier-2     Carrier-3     Carrier-4 │
-│  [VT-502]      [VT-205]      [VT-310]      [VT-412]  │
-│  ← NEW!        running       running       running    │
+│  Carrier-1     Carrier-2     Carrier-3     Carrier-4│
+│  [VT-502]      [VT-205]      [VT-310]      [VT-412] │
+│  ← NEW!        running       running       running  │
 └─────────────────────────────────────────────────────┘
 VT-101 is parked in heap (waiting for I/O to complete)
 Carrier-1 immediately picks up VT-502 — no wasted time!
@@ -208,20 +208,20 @@ Thread.startVirtualThread(task)
          │
          ▼
     [CREATED] ──────────────────────────────────────────────────────────────────────┐
-         │                                                                           │
-         ▼                                                                           │
-   Scheduler picks                                                                   │
-   carrier thread                                                                    │
-         │                                                                           │
-         ▼                                                                           │
+         │                                                                          │
+         ▼                                                                          │
+   Scheduler picks                                                                  │
+   carrier thread                                                                   │
+         │                                                                          │
+         ▼                                                                          │
     [MOUNTED] ← Virtual thread is assigned to a carrier thread                      │
-         │                                                                           │
-         ▼                                                                           │
+         │                                                                          │
+         ▼                                                                          │
     [RUNNING] ← Executing on carrier thread                                         │
-         │                                                                           │
-    Hits blocking op?                                                                │
-    (I/O / sleep / lock)                                                             │
-         │                                                                           │
+         │                                                                          │
+    Hits blocking op?                                                               │
+    (I/O / sleep / lock)                                                            │
+         │                                                                          │
          ├── YES ──► [UNMOUNTED] ── Stack saved to heap ──► Carrier thread freed    │
          │                │                                       │                 │
          │           Blocking op                           Carrier picks up         │
@@ -230,13 +230,13 @@ Thread.startVirtualThread(task)
          │                ▼                                                         │
          │           [RUNNABLE] ── Scheduler remounts on any available carrier      │
          │                │                                                         │
-         │                └──────────────────────────────────────────► [RUNNING]   │
-         │                                                                           │
+         │                └──────────────────────────────────────────► [RUNNING]    │
+         │                                                                          │
          └── NO  ──► Continues running on carrier                                   │
-                          │                                                          │
-                     Task complete                                                   │
-                          │                                                          │
-                          ▼                                                          │
+                          │                                                         │
+                     Task complete                                                  │
+                          │                                                         │
+                          ▼                                                         │
                     [TERMINATED] ───────────────────────────────────────────────────┘
 ```
 
@@ -1960,7 +1960,7 @@ Java 21 — Virtual Thread Architecture
                      User Code
                          │
            ┌─────────────┴──────────────┐
-           │   Virtual Threads           │
+           │   Virtual Threads          │
            │   VT1 VT2 VT3 ... VT-1M    │  ← millions, JVM heap
            └─────────────┬──────────────┘
                          │ schedule
@@ -1973,7 +1973,7 @@ Java 21 — Virtual Thread Architecture
     ┌────────────────────────────────────────┐
     │      Carrier Threads (= CPU cores)     │  ← platform threads
     │  CT-1      CT-2      CT-3      CT-4    │
-    │  [VT-5]    [VT-12]   [VT-99]   [idle] │
+    │  [VT-5]    [VT-12]   [VT-99]   [idle]  │
     └────────────────────────────────────────┘
                          │
                          ▼
