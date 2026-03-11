@@ -873,7 +873,7 @@ Every distributed multi-step workflow needs explicit compensating actions for ro
 | 9 | Event Sourcing | Database | Audit trail, replay | Storage, complexity |
 | 10 | Outbox Pattern | Database | Reliable event publishing | Relay infrastructure |
 | 11 | API Gateway | Communication | Single entry point | Single point of failure |
-| 12 | BFF | Communication | Per-client APIs | More services to maintain |
+| 12 | Backend for Frontend (BFF) | Communication | Per-client APIs | More services to maintain |
 | 13 | Service Mesh | Communication | Cross-cutting networking | Infrastructure complexity |
 | 14 | Sync Communication | Communication | Simplicity | Temporal coupling |
 | 15 | Async Messaging | Communication | Loose coupling | Eventual consistency |
@@ -919,7 +919,7 @@ Decomposition Patterns
                             └─→ Event Sourcing + CQRS
 
 Communication
-    ├─→ API Gateway / BFF (external)
+    ├─→ API Gateway / Backend for Frontend (BFF) (external)
     ├─→ Service Mesh (internal)
     ├─→ Sync (REST/gRPC) or Async (Kafka/RabbitMQ)
     └─→ Event-Driven Architecture
