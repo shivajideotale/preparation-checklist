@@ -69,7 +69,7 @@ AFTER KAFKA — Decoupled Event Streaming:
 ├─────────────────┼──────────────────────┼──────────────────────┤
 │  Model          │  Message queue       │  Log-based streaming │
 │  Retention      │  Gone after consume  │  Configurable (days) │
-│  Replay         │  ❌ Not possible      │  ✅ Rewind offset     │
+│  Replay         │  ❌ Not possible     │  ✅ Rewind offset    │
 │  Ordering       │  Per queue           │  Per partition       │
 │  Throughput     │  ~10K/s              │  ~1M/s               │
 │  Consumer state │  Broker tracks       │  Consumer tracks     │
@@ -89,34 +89,34 @@ AFTER KAFKA — Decoupled Event Streaming:
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                         KAFKA CLUSTER                                       │
 │                                                                             │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐                                 │
-│  │ Broker 1 │  │ Broker 2 │  │ Broker 3 │   ← Each broker hosts           │
-│  │          │  │          │  │          │     partitions (leaders/replicas)│
-│  │ Lead P0  │  │ Lead P1  │  │ Lead P2  │                                 │
-│  │ Rep  P1  │  │ Rep  P2  │  │ Rep  P0  │                                 │
-│  │ Rep  P2  │  │ Rep  P0  │  │ Rep  P1  │                                 │
-│  └──────────┘  └──────────┘  └──────────┘                                 │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐                                   │
+│  │ Broker 1 │  │ Broker 2 │  │ Broker 3 │   ← Each broker hosts             │
+│  │          │  │          │  │          │     partitions (leaders/replicas) │
+│  │ Lead P0  │  │ Lead P1  │  │ Lead P2  │                                   │
+│  │ Rep  P1  │  │ Rep  P2  │  │ Rep  P0  │                                   │
+│  │ Rep  P2  │  │ Rep  P0  │  │ Rep  P1  │                                   │
+│  └──────────┘  └──────────┘  └──────────┘                                   │
 │        │              │              │                                      │
-│  ┌─────▼──────────────▼──────────────▼─────┐                              │
-│  │              ZooKeeper / KRaft           │  ← Cluster coordination      │
-│  │         (Kafka 3.x uses KRaft mode)      │    (no ZK needed in 3.x)    │
-│  └──────────────────────────────────────────┘                              │
+│  ┌─────▼──────────────▼──────────────▼──────┐                               │
+│  │              ZooKeeper / KRaft           │  ← Cluster coordination       │
+│  │         (Kafka 3.x uses KRaft mode)      │    (no ZK needed in 3.x)      │
+│  └──────────────────────────────────────────┘                               │
 │                                                                             │
-│  ┌─────────────┐                    ┌──────────────────┐                  │
-│  │  PRODUCERS  │──── write ──────►  │     TOPICS        │                 │
-│  │             │                    │  ┌────────────┐   │                 │
-│  │  App A      │                    │  │ Partition 0│   │                 │
-│  │  App B      │                    │  │ Partition 1│   │                 │
-│  │  App C      │                    │  │ Partition 2│   │                 │
-│  └─────────────┘                    │  └────────────┘   │                 │
-│                                     └──────────┬─────────┘                 │
+│  ┌─────────────┐                    ┌───────────────────┐                   │
+│  │  PRODUCERS  │──── write ──────►  │     TOPICS        │                   │
+│  │             │                    │  ┌────────────┐   │                   │
+│  │  App A      │                    │  │ Partition 0│   │                   │
+│  │  App B      │                    │  │ Partition 1│   │                   │
+│  │  App C      │                    │  │ Partition 2│   │                   │
+│  └─────────────┘                    │  └────────────┘   │                   │
+│                                     └──────────┬────────┘                   │
 │                                                │ read                       │
-│  ┌─────────────────────────────────────────────▼──────┐                   │
-│  │                    CONSUMER GROUPS                  │                   │
-│  │   Group "analytics":  [Consumer A] [Consumer B]    │                   │
-│  │   Group "billing":    [Consumer C]                 │                   │
-│  │   Group "audit":      [Consumer D] [Consumer E]    │                   │
-│  └────────────────────────────────────────────────────┘                   │
+│  ┌─────────────────────────────────────────────▼──────┐                     │
+│  │                    CONSUMER GROUPS                 │                     │
+│  │   Group "analytics":  [Consumer A] [Consumer B]    │                     │
+│  │   Group "billing":    [Consumer C]                 │                     │
+│  │   Group "audit":      [Consumer D] [Consumer E]    │                     │
+│  └────────────────────────────────────────────────────┘                     │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
