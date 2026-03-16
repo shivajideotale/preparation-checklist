@@ -114,7 +114,7 @@ Assume: topic `orders`, partition 0, leader on Broker 1, followers on Broker 2 a
 #### acks=1 vs acks=all vs acks=0
 - `acks=0`: Producer fires and forgets. No response awaited. Max throughput, zero durability.
 - `acks=1`: Leader writes to its log and acks immediately. If leader crashes before followers replicate, data is lost.
-- `acks=all` (also `-1`): Leader waits for all ISR members to replicate. Combined with `min.insync.replicas=2`, this ensures at least 2 replicas have the data before ack. Safe but adds ~1 RTT of latency (follower fetch cycle).
+- `acks=all` (also `-1`): Leader waits for all ISR members to replicate. Combined with `min.insync.replicas=2`, this ensures at least 2 replicas have the data before ack. Safe but adds ~1 Round-trip time (RTT) of latency (follower fetch cycle).
 
 #### ISR and Slow Followers
 If a follower hasn't fetched within `replica.lag.time.max.ms` (default 30s), it's removed from the ISR. Now `acks=all` only waits for the remaining ISR members. This preserves availability at the cost of a weaker durability guarantee — if the leader crashes, the lagging follower (out of ISR) might become leader and miss recent messages.
