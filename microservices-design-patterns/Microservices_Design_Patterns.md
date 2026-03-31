@@ -160,7 +160,7 @@ Use only as a **transitional step** during migration.
 ### 7. Saga Pattern *(also a Transaction Pattern)*
 
 Manage distributed transactions via a sequence of local transactions with compensations.
-*(See full detail in [Distributed Transaction Management](./Distributed_Transaction_Management_Microservices.md))*
+*(See full detail in [Distributed Transaction Management](Distributed_Transaction_Management_Microservices.md))*
 
 ---
 
@@ -852,7 +852,7 @@ Second call: → find cached result → return same result (no double charge) �
 
 ### 41. Saga / Compensating Transaction
 
-*(See full detail in [Distributed Transaction Management](./Distributed_Transaction_Management_Microservices.md))*
+*(See full detail in [Distributed Transaction Management](Distributed_Transaction_Management_Microservices.md))*
 
 Every distributed multi-step workflow needs explicit compensating actions for rollback.
 

@@ -1251,7 +1251,7 @@ public class AsyncPaymentClient {
 
 A **Saga** coordinates a distributed transaction across multiple services through a sequence of local transactions and compensating actions.
 
-*(Full deep-dive in [Distributed_Transaction_Management_Microservices.md](./Distributed_Transaction_Management_Microservices.md))*
+*(Full deep-dive in [Distributed_Transaction_Management_Microservices.md](Distributed_Transaction_Management_Microservices.md))*
 
 #### Choreography Saga — Communication Flow
 
