@@ -1,6 +1,6 @@
 # 🧩 LLD + S.O.L.I.D + 24 Design Patterns
 
-> A complete reference guide — from foundational concepts to production-ready design — with deep explanations and Java examples.
+> A complete reference guide — from foundational concepts to production-ready design — with deep explanations, Java examples, and Mermaid UML class diagrams.
 
 ---
 
@@ -10,6 +10,7 @@
 01 → Understand WHAT LLD is and HOW it works
 02 → Learn the 5 SOLID Principles (the rules)
 03–26 → Apply them through 24 Design Patterns (the tools)
+27 → Quick-Reference Summary for fast pattern selection
 ```
 
 ---
@@ -19,7 +20,7 @@
 | # | File | What It Covers |
 |---|---|---|
 | **01** | [LLD Introduction](./01_LLD_Introduction.md) | What is LLD, LLD vs HLD, the full design process, UML basics, Parking Lot end-to-end example, common interview problems |
-| **02** | [S.O.L.I.D Principles](./02_SOLID_Principles.md) | All 5 principles in one file — SRP, OCP, LSP, ISP, DIP — each with ❌ violation and ✅ fix in Java |
+| **02** | [S.O.L.I.D Principles](./02_SOLID_Principles.md) | All 5 principles — SRP, OCP, LSP, ISP, DIP — each with ❌ violation, ✅ fix, and Mermaid class diagram |
 
 ---
 
@@ -137,4 +138,12 @@
 
 ---
 
-*Every file: Intent → Problem → ❌ Violation → ✅ Solution → Full Java Code → Output → Real-World Usage → Pros & Cons → When to Use → Key Takeaway*
+## 📋 Quick-Reference Summary
+
+| # | File | What It Covers |
+|---|---|---|
+| **27** | [Pattern Quick-Reference Summary](./27_Pattern_Quick_Reference_Summary.md) | Scenario → Pattern decision guide, anti-pattern warning signs, pattern combination recipes, one-line definitions, full comparison table |
+
+---
+
+*Every file: Intent → Problem → ❌ Violation → ✅ Solution → Full Java Code → Output → Mermaid UML → Real-World Usage → Pros & Cons → When to Use → Key Takeaway*
