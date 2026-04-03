@@ -7,7 +7,7 @@ A complete Low Level Design implementation of a Parking Lot system in Java, cove
 ## 📐 Class Diagram
 
 <p align="center">
-  <img src="img/parking_lot_lld_class_diagram.svg" alt="Parking Lot LLD Class Diagram" width="100%"/>
+  <img src="img/parking_lot_lld_class_diagram.svg" alt="Parking Lot LLD Class Diagram" width="50%"/>
 </p>
 
 ---
